@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 
-export default function Navbar() {
+export default function Nav() {
   const navigate = useNavigate();
 
   function logout() {
