@@ -26,4 +26,9 @@
     "tailwindcss": "3.4.14",
     "vite": "^5.1.0"
   }
+
+  "dependencies": {
+  "lucide-react": "^0.460.0"
+}
+
 }
