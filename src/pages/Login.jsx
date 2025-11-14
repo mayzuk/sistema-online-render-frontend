@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { api } from '../services/api'
+import { motion } from 'framer-motion'
+import { Lock, Mail } from 'lucide-react'
 
-export default function Login() {
+export default function Login(){
   const [email,setEmail] = useState('')
   const [password,setPassword] = useState('')
   const [error,setError] = useState('')
@@ -10,109 +12,98 @@ export default function Login() {
 
   async function submit(e){
     e.preventDefault()
+    setError('')
 
-    try {
-      const response = await api.post('/login', {
-        email,
-        password
-      })
+    try{
+      const res = await api.post('/api/login', { email, password })
+      localStorage.setItem('token', res.data.token)
+      localStorage.setItem('user', JSON.stringify(res.data.user))
 
-      const token = response.data.token
-
-      if (!token) {
-        setError("Token inválido retornado pelo servidor")
-        return
-      }
-
-      localStorage.setItem("token", token)
-
-      navigate("/dashboard")
-    } 
-    catch (err) {
-      setError("Login inválido. Verifique email e senha.")
+      navigate('/dashboard')
+    }catch(err){
+      setError(err.response?.data?.error || 'Erro ao autenticar')
     }
   }
 
   return (
-    <div style={{
-      width: "100vw",
-      height: "100vh",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      background: "#f0f2f5"
-    }}>
-      <div style={{
-        width: 350,
-        padding: 30,
-        background: "white",
-        borderRadius: 12,
-        boxShadow: "0 4px 20px rgba(0,0,0,0.1)"
-      }}>
-        
-        <h2 style={{ textAlign: "center", marginBottom: 20 }}>Login</h2>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-100 to-slate-300 p-6">
 
-        <form onSubmit={submit}>
-          <input
-            placeholder="Email"
-            value={email}
-            onChange={e=>setEmail(e.target.value)}
-            style={{
-              width: "100%",
-              padding: 12,
-              marginBottom: 12,
-              borderRadius: 8,
-              border: "1px solid #ccc"
-            }}
-          />
+      {/* Container animado */}
+      <motion.div
+        initial={{ y: 20, opacity: 0 }} 
+        animate={{ y: 0, opacity: 1 }} 
+        transition={{ duration: 0.5 }}
+        className="bg-white w-full max-w-md p-10 rounded-3xl shadow-xl border border-slate-200"
+      >
 
-          <input
-            type="password"
-            placeholder="Senha"
-            value={password}
-            onChange={e=>setPassword(e.target.value)}
-            style={{
-              width: "100%",
-              padding: 12,
-              marginBottom: 12,
-              borderRadius: 8,
-              border: "1px solid #ccc"
-            }}
-          />
+        <motion.h1 
+          initial={{ opacity: 0, y: -10 }} 
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="text-3xl font-bold text-slate-800 mb-6 text-center"
+        >
+          Acessar Conta
+        </motion.h1>
 
-          {error && (
-            <div
-              style={{
-                background: "#ffdddd",
-                padding: 10,
-                borderRadius: 8,
-                marginBottom: 12,
-                textAlign: "center",
-                color: "#b30000"
-              }}
-            >
-              {error}
-            </div>
-          )}
+        {/* BOX DE ERRO */}
+        {error && (
+          <motion.div 
+            initial={{ opacity: 0 }} 
+            animate={{ opacity: 1 }}
+            className="bg-red-100 text-red-700 p-3 rounded-lg text-sm mb-4 border border-red-300"
+          >
+            {error}
+          </motion.div>
+        )}
 
-          <button 
+        <form onSubmit={submit} className="space-y-4">
+
+          {/* EMAIL */}
+          <div>
+            <label className="font-semibold text-slate-700 flex items-center gap-2 mb-1">
+              <Mail size={18}/> Email
+            </label>
+            <input
+              value={email}
+              onChange={e=>setEmail(e.target.value)}
+              className="w-full p-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all"
+            />
+          </div>
+
+          {/* SENHA */}
+          <div>
+            <label className="font-semibold text-slate-700 flex items-center gap-2 mb-1">
+              <Lock size={18}/> Senha
+            </label>
+            <input
+              type="password"
+              value={password}
+              onChange={e=>setPassword(e.target.value)}
+              className="w-full p-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all"
+            />
+          </div>
+
+          {/* BOTÃO */}
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.97 }}
             type="submit"
-            style={{
-              width: "100%",
-              padding: 14,
-              background: "#4a67ff",
-              color: "white",
-              fontWeight: "bold",
-              borderRadius: 8,
-              border: "none",
-              cursor: "pointer"
-            }}
+            className="w-full py-3 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-500 text-white font-semibold shadow-md"
           >
             Entrar
-          </button>
+          </motion.button>
+
         </form>
 
-      </div>
+        {/* CRIAR CONTA */}
+        <div className="mt-5 text-sm text-center">
+          Não tem conta?{" "}
+          <Link to="/register" className="text-blue-700 font-semibold hover:underline">
+            Criar conta
+          </Link>
+        </div>
+
+      </motion.div>
     </div>
   )
 }
