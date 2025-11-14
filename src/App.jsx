@@ -4,8 +4,8 @@ import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import CreateCommunity from "./pages/CommunityForm";
 import Reports from "./pages/Reports";
-import Account from "./pages/Account";
-import Navbar from "./components/Navbar";
+import Account from "./pages/UserAccount";
+import Navbar from "./components/Nav";
 
 export default function App() {
   const isLogged = localStorage.getItem("token");
