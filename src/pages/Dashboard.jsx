@@ -1,48 +1,67 @@
-import React, { useEffect, useState } from 'react'
-import { api } from '../services/api'
-import { useNavigate } from 'react-router-dom'
+import React from 'react'
+import HeaderCard from '../components/HeaderCard'
+import { motion } from 'framer-motion'
+import { Link } from 'react-router-dom'
 
 export default function Dashboard(){
-  const [comunidades, setComunidades] = useState([])
-  const navigate = useNavigate()
-
-  async function fetchData(){
-    try {
-      const res = await api.get('/api/comunidades', { headers: { Authorization: 'Bearer ' + localStorage.getItem('token') } })
-      setComunidades(res.data)
-    } catch (err) {
-      console.error(err)
-    }
-  }
-
-  useEffect(()=>{ fetchData() },[])
-
   return (
-    <div>
-      <header className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold">Painel</h2>
-        <div>
-          <button onClick={()=>navigate('/comunidade/novo')} className="btn bg-sky-200 mr-2">Cadastrar comunidade</button>
-        </div>
-      </header>
-
-      <section className="grid gap-4">
-        {comunidades.length===0 && <div className="bg-white p-4 rounded">Nenhuma comunidade cadastrada.</div>}
-        {comunidades.map(c=>(
-          <div key={c.id} className="bg-white p-4 rounded shadow">
-            <div className="flex justify-between">
-              <div>
-                <div className="text-lg font-semibold">Comunidade {c.numero_comunidade}</div>
-                <div className="text-sm">{c.nome_diocese} • {c.nome_cidade} • Paróquia: {c.nome_paroquia}</div>
-                <div className="text-sm">Total: {c.qtd_total} • Jovens: {c.qtd_jovens}</div>
-              </div>
-              <div>
-                <button onClick={()=>navigate('/comunidade/'+c.id)} className="px-3 py-2 rounded border">Abrir</button>
-              </div>
+    <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <motion.div initial={{opacity:0}} animate={{opacity:1}} transition={{duration:0.4}}>
+        <HeaderCard title="Bem-vindo">
+          <p className="text-slate-600">Resumo rápido das comunidades e atividades.</p>
+          <div className="mt-4 grid grid-cols-2 gap-3">
+            <div className="bg-white p-4 rounded-lg shadow">
+              <div className="text-2xl font-bold">128</div>
+              <div className="text-sm text-slate-500">Comunidades</div>
+            </div>
+            <div className="bg-white p-4 rounded-lg shadow">
+              <div className="text-2xl font-bold">412</div>
+              <div className="text-sm text-slate-500">Pessoas</div>
             </div>
           </div>
-        ))}
-      </section>
+          <div className="mt-4">
+            <Link to="/comunidade/novo" className="inline-block btn bg-brand-blue text-white">Cadastrar comunidade</Link>
+          </div>
+        </HeaderCard>
+      </motion.div>
+
+      <div className="lg:col-span-2 space-y-6">
+        <HeaderCard title="Últimas comunidades">
+          <div className="space-y-3">
+            <div className="bg-white p-4 rounded-lg shadow flex justify-between items-center">
+              <div>
+                <div className="font-semibold">Comunidade 01</div>
+                <div className="text-sm text-slate-500">Diocese X • Cidade Y</div>
+              </div>
+              <div className="text-slate-500">15 membros</div>
+            </div>
+            <div className="bg-white p-4 rounded-lg shadow flex justify-between items-center">
+              <div>
+                <div className="font-semibold">Comunidade 02</div>
+                <div className="text-sm text-slate-500">Diocese Z • Cidade A</div>
+              </div>
+              <div className="text-slate-500">22 membros</div>
+            </div>
+          </div>
+        </HeaderCard>
+
+        <HeaderCard title="Atividades">
+          <div className="grid grid-cols-3 gap-4">
+            <div className="bg-white p-4 rounded-lg shadow">
+              <div className="font-bold text-2xl">34</div>
+              <div className="text-sm text-slate-500">Novos levantados</div>
+            </div>
+            <div className="bg-white p-4 rounded-lg shadow">
+              <div className="font-bold text-2xl">12</div>
+              <div className="text-sm text-slate-500">Em missão</div>
+            </div>
+            <div className="bg-white p-4 rounded-lg shadow">
+              <div className="font-bold text-2xl">8</div>
+              <div className="text-sm text-slate-500">Eventos</div>
+            </div>
+          </div>
+        </HeaderCard>
+      </div>
     </div>
   )
 }
