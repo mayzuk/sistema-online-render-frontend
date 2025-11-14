@@ -13,7 +13,7 @@ export default function App() {
   return (
     <BrowserRouter>
       {/* Só renderiza o menu se estiver logado */}
-      {isLogged && <Navbar />}
+      {isLogged && <Nav />}
 
       <Routes>
         <Route path="/" element={<Login />} />
