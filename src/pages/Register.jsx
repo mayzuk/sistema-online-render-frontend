@@ -81,7 +81,10 @@ export default function Register() {
           className="w-full p-3 rounded border mb-4"
         />
 
-        <button className="w-full btn bg-gradient-to-r from-sky-300 to-indigo-300 font-semibold">
+        <button 
+          type=submit 
+          className="w-full btn bg-gradient-to-r from-sky-300 to-indigo-300 font-semibold"
+        >
           Criar conta
         </button>
       </form>
