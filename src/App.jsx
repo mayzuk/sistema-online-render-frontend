@@ -21,9 +21,9 @@ export default function App() {
 
         {/* Telas protegidas */}
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/community/create" element={<CreateCommunity />} />
+        <Route path="/community/create" element={<CommunityForm />} />
         <Route path="/reports" element={<Reports />} />
-        <Route path="/account" element={<Account />} />
+        <Route path="/account" element={<UserAccount />} />
       </Routes>
     </BrowserRouter>
   );
