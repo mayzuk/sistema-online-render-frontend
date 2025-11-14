@@ -1,18 +1,27 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from "react-router-dom";
 
-export default function Nav({ user }) {
+export default function Navbar() {
+  const navigate = useNavigate();
+
+  function logout() {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    navigate("/");
+  }
+
   return (
-    <aside className="w-72 bg-white shadow-lg p-6 flex-shrink-0" aria-label="Menu principal">
-      <h1 className="text-2xl font-bold text-brand-blue mb-4">Comunidades</h1>
-      <nav className="flex flex-col gap-2" role="navigation" aria-label="Navegação">
-        <Link to="/" className="px-3 py-2 rounded hover:bg-sky-100 focus:outline-none">🏠 Início</Link>
-        <Link to="/comunidades" className="px-3 py-2 rounded hover:bg-sky-100 focus:outline-none">📋 Comunidades</Link>
-        <Link to="/comunidade/novo" className="px-3 py-2 rounded hover:bg-sky-100 focus:outline-none">➕ Cadastrar comunidade</Link>
-        <Link to="/user" className="px-3 py-2 rounded hover:bg-sky-100 focus:outline-none">⚙️ Minha conta</Link>
-        <Link to="/suporte" className="px-3 py-2 rounded hover:bg-sky-100 focus:outline-none">🛠 Solicitar suporte</Link>
-        {user?.is_admin && <Link to="/relatorios" className="px-3 py-2 rounded hover:bg-sky-100 focus:outline-none">📊 Relatórios (admin)</Link>}
-      </nav>
-    </aside>
-  )
+    <div className="w-full bg-indigo-600 text-white p-4 shadow-lg mb-6">
+      <div className="max-w-5xl mx-auto flex justify-between items-center">
+        <h1 className="text-xl font-bold">Menu</h1>
+
+        <nav className="flex gap-6">
+          <Link to="/dashboard" className="hover:underline">Dashboard</Link>
+          <Link to="/community/create" className="hover:underline">Criar Comunidade</Link>
+          <Link to="/reports" className="hover:underline">Relatórios</Link>
+          <Link to="/account" className="hover:underline">Minha Conta</Link>
+          <button onClick={logout} className="hover:underline">Sair</button>
+        </nav>
+      </div>
+    </div>
+  );
 }
