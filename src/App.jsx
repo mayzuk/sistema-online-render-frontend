@@ -44,7 +44,7 @@ export default function App() {
           } />
 
           {/* Rotas públicas */}
-          <Route path="/login" element={<LoginTest />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
           {/* Rotas protegidas */}
