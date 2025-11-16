@@ -1,13 +1,10 @@
 import React from 'react'
-import HeaderCard from '../../components/HeaderCard'
 
-
-export default function AdminLayout({ title, children }){
-return (
-<div className="p-6">
-<HeaderCard title={title}>
-{children}
-</HeaderCard>
-</div>
-)
+export default function AdminLayout({ title, children }) {
+  return (
+    <div className="max-w-4xl mx-auto space-y-4">
+      <h1 className="text-2xl font-bold">{title}</h1>
+      <div>{children}</div>
+    </div>
+  )
 }
