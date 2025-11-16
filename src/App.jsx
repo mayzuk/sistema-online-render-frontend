@@ -1,10 +1,8 @@
 import React from 'react'
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import Nav from './components/Nav'
-
 import Login from './pages/Login'
 import Register from './pages/Register'
-
 import Dashboard from './pages/Dashboard'
 import CreateCommunity from './pages/CreateCommunity'
 import Reports from './pages/Reports'
@@ -17,7 +15,6 @@ import UsersAdmin from './pages/admin/UsersAdmin'
 import CitiesAdmin from './pages/admin/CitiesAdmin'
 import EtapasAdmin from './pages/admin/EtapasAdmin'
 import CarismasAdmin from './pages/admin/CarismasAdmin'
-
 import { AuthContext } from './contexts/AuthContext'
 // -------------------------------------
 
@@ -37,39 +34,35 @@ function RequireAdmin({ children }) {
 }
 
 export default function App() {
-
   const location = useLocation()
 
   // 🔥 Estado que controla se o usuário está logado
   const [isLogged, setIsLogged] = React.useState(!!localStorage.getItem('token'))
 
-  // 🔥 Atualiza automaticamente quando o token muda
+  // 🔥 Atualiza automaticamente quando o token muda (login, logout)
   React.useEffect(() => {
     const listener = () => setIsLogged(!!localStorage.getItem('token'))
     window.addEventListener('storage', listener)
     return () => window.removeEventListener('storage', listener)
   }, [])
 
-  // 🔥 Rotas que NÃO devem mostrar o menu
+  // Rotas em que o menu NÃO deve aparecer
   const hideMenuRoutes = ['/login', '/register']
-
   const mustHideMenu = hideMenuRoutes.includes(location.pathname)
 
   return (
     <div className="min-h-screen bg-slate-50">
-
-      {/* 🔥 Navbar só aparece se o usuário estiver logado E não estiver em rotas públicas */}
+      {/* Navbar só aparece se o usuário estiver logado E não estiver em rotas públicas */}
       {isLogged && !mustHideMenu && <Nav />}
-
       <main className={isLogged && !mustHideMenu ? 'pl-72 p-8 transition-all' : 'p-8'}>
         <Routes>
-
           {/* Redirecionamento inteligente */}
-          <Route path="/" element={
-            isLogged
-              ? <Navigate to="/dashboard" />
-              : <Navigate to="/login" />
-          } />
+          <Route
+            path="/"
+            element={
+              isLogged ? <Navigate to="/dashboard" /> : <Navigate to="/login" />
+            }
+          />
 
           {/* Rotas públicas */}
           <Route path="/login" element={<Login />} />
@@ -81,10 +74,6 @@ export default function App() {
           <Route path="/comunidade/:id" element={<RequireAuth><CommunityForm /></RequireAuth>} />
           <Route path="/relatorios" element={<RequireAuth><Reports /></RequireAuth>} />
           <Route path="/user" element={<RequireAuth><Account /></RequireAuth>} />
-          <Route path="/forgot" element={<Forgot />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
-          <Route path="/confirm" element={<Confirm />} />
-
 
           {/* =================== ROTAS ADMIN =================== */}
           <Route
@@ -97,7 +86,6 @@ export default function App() {
               </RequireAuth>
             }
           />
-
           <Route
             path="/admin/users"
             element={
@@ -108,7 +96,6 @@ export default function App() {
               </RequireAuth>
             }
           />
-
           <Route
             path="/admin/cidades"
             element={
@@ -119,7 +106,6 @@ export default function App() {
               </RequireAuth>
             }
           />
-
           <Route
             path="/admin/etapas"
             element={
@@ -130,7 +116,6 @@ export default function App() {
               </RequireAuth>
             }
           />
-
           <Route
             path="/admin/carismas"
             element={
@@ -142,7 +127,6 @@ export default function App() {
             }
           />
           {/* ================================================== */}
-
         </Routes>
       </main>
     </div>
