@@ -81,6 +81,10 @@ export default function App() {
           <Route path="/comunidade/:id" element={<RequireAuth><CommunityForm /></RequireAuth>} />
           <Route path="/relatorios" element={<RequireAuth><Reports /></RequireAuth>} />
           <Route path="/user" element={<RequireAuth><Account /></RequireAuth>} />
+          <Route path="/forgot" element={<Forgot />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/confirm" element={<Confirm />} />
+
 
           {/* =================== ROTAS ADMIN =================== */}
           <Route
