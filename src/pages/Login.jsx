@@ -59,6 +59,13 @@ export default function Login(){
           <Link to="/register" className="text-blue-700 font-semibold hover:underline">Criar conta</Link>
         </div>
       </motion.div>
+      
+      <div className="text-right mt-2">
+  <a href="/forgot" className="text-blue-600 text-sm hover:underline">
+    Esqueci minha senha
+  </a>
+</div>
+
     </div>
   )
 }
