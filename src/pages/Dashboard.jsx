@@ -1,96 +1,100 @@
-import React, { useEffect, useState } from 'react'
-import HeaderCard from '../components/HeaderCard'
-import { motion } from 'framer-motion'
-import { Link } from 'react-router-dom'
-import { api } from '../services/api'
+import { useEffect, useState } from "react";
+import { api } from "../services/api";
 
 export default function Dashboard() {
-
-  const [totais, setTotais] = useState(null)
-  const [ultimas, setUltimas] = useState([])
-  const [atividades, setAtividades] = useState(null)
+  const [carismas, setCarismas] = useState([]);
+  const [comunidades, setComunidades] = useState([]);
+  const [discipuladores, setDiscipuladores] = useState([]);
+  const [atividades, setAtividades] = useState({});
 
   useEffect(() => {
-    async function load() {
-      const token = localStorage.getItem("token")
+    async function loadData() {
+      try {
+        const carismasRes = await api.get("/carismas");
+        const comunidadesRes = await api.get("/comunidades");
+        const discipuladoresRes = await api.get("/discipuladores");
+        const atividadesRes = await api.get("/atividades");
 
-      const config = { headers: { Authorization: "Bearer " + token } }
-
-      const t = await api.get('/api/dashboard/totais', config)
-      const u = await api.get('/api/dashboard/ultimas', config)
-      const a = await api.get('/api/dashboard/atividades', config)
-
-      setTotais(t.data)
-      setUltimas(u.data.comunidades)
-      setAtividades(a.data)
+        setCarismas(carismasRes.data);
+        setComunidades(comunidadesRes.data);
+        setDiscipuladores(discipuladoresRes.data);
+        setAtividades(atividadesRes.data);
+      } catch (error) {
+        console.error("Erro ao carregar dados do backend:", error);
+      }
     }
 
-    load()
-  }, [])
+    loadData();
+  }, []);
 
-  if (!totais || !atividades) return <p>Carregando...</p>
+  const HeaderCard = ({ title, children }) => (
+    <div className="bg-white p-6 rounded-xl shadow-md">
+      <h2 className="text-xl font-semibold mb-4">{title}</h2>
+      {children}
+    </div>
+  );
 
   return (
-    <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div className="p-8 space-y-8">
 
-      {/* BEM-VINDO */}
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.4 }}>
-        <HeaderCard title="Bem-vindo">
-          <p className="text-slate-600">Resumo rápido das comunidades e atividades.</p>
-
-          <div className="mt-4 grid grid-cols-2 gap-3">
-            <div className="bg-white p-4 rounded-lg shadow">
-              <div className="text-2xl font-bold">{totais.total_comunidades}</div>
-              <div className="text-sm text-slate-500">Comunidades</div>
+      {/* CARISMAS */}
+      <HeaderCard title="Carismas">
+        <div className="grid grid-cols-3 gap-4">
+          {carismas.map((item) => (
+            <div key={item.id} className="bg-slate-100 p-4 rounded-lg text-center">
+              <div className="text-2xl font-bold">{item.quantidade}</div>
+              <div className="text-sm text-slate-600">{item.nome}</div>
             </div>
-            <div className="bg-white p-4 rounded-lg shadow">
-              <div className="text-2xl font-bold">{totais.total_pessoas}</div>
-              <div className="text-sm text-slate-500">Pessoas</div>
+          ))}
+        </div>
+      </HeaderCard>
+
+      {/* COMUNIDADES */}
+      <HeaderCard title="Comunidades">
+        <div className="grid grid-cols-3 gap-4">
+          {comunidades.map((c) => (
+            <div key={c.id} className="bg-slate-100 p-4 rounded-lg">
+              <div className="text-lg font-bold">{c.nome}</div>
+              <div className="text-sm text-slate-600">{c.cidade}</div>
             </div>
+          ))}
+        </div>
+      </HeaderCard>
+
+      {/* DISCIPULADORES */}
+      <HeaderCard title="Discipuladores">
+        <div className="grid grid-cols-3 gap-4">
+          {discipuladores.map((d) => (
+            <div key={d.id} className="bg-slate-100 p-4 rounded-lg">
+              <div className="text-lg font-bold">{d.nome}</div>
+              <div className="text-sm text-slate-600">{d.nivel}</div>
+            </div>
+          ))}
+        </div>
+      </HeaderCard>
+
+      {/* ATIVIDADES */}
+      <HeaderCard title="Atividades">
+        <div className="grid grid-cols-3 gap-4">
+
+          <div className="bg-white p-4 rounded-lg shadow">
+            <div className="text-2xl font-bold">{atividades.total_eventos}</div>
+            <div className="text-sm text-slate-500">Eventos</div>
           </div>
 
-          <div className="mt-4">
-            <Link to="/comunidade/novo" className="inline-block btn bg-brand-blue text-white">
-              Cadastrar comunidade
-            </Link>
+          <div className="bg-white p-4 rounded-lg shadow">
+            <div className="text-2xl font-bold">{atividades.total_encontros}</div>
+            <div className="text-sm text-slate-500">Encontros</div>
           </div>
-        </HeaderCard>
-      </motion.div>
 
-      {/* ULTIMAS */}
-      <div className="lg:col-span-2 space-y-6">
-        <HeaderCard title="Últimas comunidades">
-          <div className="space-y-3">
-            {ultimas.map(c => (
-              <div key={c.id} className="bg-white p-4 rounded-lg shadow flex justify-between items-center">
-                <div>
-                  <div className="font-semibold">Comunidade {c.numero_comunidade}</div>
-                  <div className="text-sm text-slate-500">{c.nome_diocese} • {c.nome_cidade}</div>
-                </div>
-                <div className="text-slate-500">{c.qtd_total} membros</div>
-              </div>
-            ))}
+          <div className="bg-white p-4 rounded-lg shadow">
+            <div className="text-2xl font-bold">{atividades.total_outros}</div>
+            <div className="text-sm text-slate-500">Outros</div>
           </div>
-        </HeaderCard>
 
-        {/* ATIVIDADES */}
-<HeaderCard title="Atividades">
-  <div className="grid grid-cols-3 gap-4">
+        </div>
+      </HeaderCard>
 
-    <div className="bg-white p-4 rounded-lg shadow">
-      <div className="text-2xl font-bold">{atividades.total_eventos}</div>
-      <div className="text-sm text-slate-500">Eventos</div>
     </div>
-
-    <div className="bg-white p-4 rounded-lg shadow">
-      <div className="text-2xl font-bold">{atividades.total_encontros}</div>
-      <div className="text-sm text-slate-500">Encontros</div>
-    </div>
-
-    <div className="bg-white p-4 rounded-lg shadow">
-      <div className="text-2xl font-bold">{atividades.total_outros}</div>
-      <div className="text-sm text-slate-500">Outros</div>
-    </div>
-
-  </div>
-</HeaderCard>
+  );
+}
