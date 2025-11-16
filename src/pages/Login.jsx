@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { api } from '../services/api'
 import { motion } from 'framer-motion'
-import { Lock, Mail } from 'lucide-react'
+import { Mail, Lock } from "lucide-react/dist/esm/lucide-react.js"
 
 export default function Login(){
   const [email,setEmail] = useState('')
