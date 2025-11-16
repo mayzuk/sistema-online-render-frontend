@@ -6,7 +6,17 @@ import { Link } from 'react-router-dom'
 
 export default function Dashboard() {
   const { user } = useContext(AuthContext)
-  const [data, setData] = useState(null)
+  const [data, setData] = useState({
+    total_comunidades: 0,
+    total_pessoas: 0,
+    total_carismas: 0,
+    ultimas: [],
+    atividades: {
+      total_eventos: 0,
+      total_encontros: 0,
+      total_outros: 0
+    }
+  })
   const [loading, setLoading] = useState(true)
   const [err, setErr] = useState('')
 
@@ -15,7 +25,14 @@ export default function Dashboard() {
       try {
         setLoading(true)
         const res = await api.get('/api/dashboard')
-        setData(res.data)
+        if (res?.data) {
+          setData({
+            ...data,
+            ...res.data,
+            ultimas: res.data.ultimas || [],
+            atividades: res.data.atividades || data.atividades
+          })
+        }
       } catch (e) {
         console.error(e)
         setErr('Erro ao carregar dashboard')
@@ -60,6 +77,10 @@ export default function Dashboard() {
       <div className="lg:col-span-2">
         <HeaderCard title="Últimas comunidades">
           <div className="space-y-3">
+            {data.ultimas.length === 0 && (
+              <p className="text-sm text-slate-500">Nenhuma comunidade cadastrada ainda.</p>
+            )}
+
             {data.ultimas.map(c => (
               <div key={c.id} className="bg-white p-4 rounded-lg shadow flex justify-between items-center">
                 <div>
