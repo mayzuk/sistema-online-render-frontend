@@ -1,24 +1,33 @@
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import React, { useState, useEffect, useContext } from 'react'
 import { api } from '../services/api'
+import { AuthContext } from '../contexts/AuthContext'
 import { motion } from 'framer-motion'
 
 export default function Register(){
   const [name,setName]=useState(''); const [email,setEmail]=useState(''); const [password,setPassword]=useState('')
   const [error,setError]=useState(''); const [success,setSuccess]=useState('')
-  const navigate = useNavigate()
+  const [cities,setCities] = useState([])
+  const { register } = useContext(AuthContext)
+
+  useEffect(()=> {
+    api.get('/api/cities').then(r=>setCities(r.data)).catch(()=>{})
+  },[])
 
   async function submit(e){
     e.preventDefault(); setError(''); setSuccess('')
     try{
-      const res = await api.post('/api/register', { name, email, password })
-      if(res.data?.user){
-        setSuccess('Usuário criado com sucesso! Redirecionando para login...')
+      const payload = { name, email, password, city_id: selectedCity }
+      const res = await register(payload)
+      if(res?.user){
+        setSuccess('Usuário criado com sucesso! Redirecionando...')
         setName(''); setEmail(''); setPassword('')
-        setTimeout(()=> navigate('/login'), 2000)
+        // o AuthContext já guardou token e user no localStorage
+        setTimeout(()=> window.location.href = '/dashboard', 1200)
       } else setError('Erro ao criar usuário')
     }catch(err){ setError(err.response?.data?.error || 'Erro ao criar usuário') }
   }
+
+  const [selectedCity, setSelectedCity] = useState('')
 
   return (
     <div className="max-w-md mx-auto mt-12">
@@ -29,10 +38,19 @@ export default function Register(){
         <form onSubmit={submit}>
           <label className="block font-semibold">Nome</label>
           <input value={name} onChange={e=>setName(e.target.value)} className="w-full p-3 rounded border mb-3" />
+
           <label className="block font-semibold">Email</label>
           <input value={email} onChange={e=>setEmail(e.target.value)} className="w-full p-3 rounded border mb-3" />
+
           <label className="block font-semibold">Senha</label>
           <input type="password" value={password} onChange={e=>setPassword(e.target.value)} className="w-full p-3 rounded border mb-4" />
+
+          <label className="block font-semibold">Cidade</label>
+          <select value={selectedCity} onChange={e=>setSelectedCity(e.target.value)} className="w-full p-3 rounded border mb-4">
+            <option value="">-- selecione sua cidade --</option>
+            {cities.map(c => (<option key={c.id} value={c.id}>{c.name}</option>))}
+          </select>
+
           <button type="submit" className="w-full btn bg-gradient-to-r from-brand-sky to-brand-blue text-white font-semibold">Criar conta</button>
         </form>
       </motion.div>
