@@ -1,8 +1,10 @@
 import React from 'react'
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import Nav from './components/Nav'
+
 import Login from './pages/Login'
 import Register from './pages/Register'
+
 import Dashboard from './pages/Dashboard'
 import CreateCommunity from './pages/CreateCommunity'
 import Reports from './pages/Reports'
@@ -15,8 +17,8 @@ import UsersAdmin from './pages/admin/UsersAdmin'
 import CitiesAdmin from './pages/admin/CitiesAdmin'
 import EtapasAdmin from './pages/admin/EtapasAdmin'
 import CarismasAdmin from './pages/admin/CarismasAdmin'
-import { AuthContext } from './contexts/AuthContext'
 
+import { AuthContext } from './contexts/AuthContext'
 // -------------------------------------
 
 function RequireAuth({ children }) {
@@ -36,23 +38,30 @@ function RequireAdmin({ children }) {
 
 export default function App() {
 
+  const location = useLocation()
+
   // 🔥 Estado que controla se o usuário está logado
   const [isLogged, setIsLogged] = React.useState(!!localStorage.getItem('token'))
 
-  // 🔥 Atualiza automaticamente quando o token muda (login, logout)
+  // 🔥 Atualiza automaticamente quando o token muda
   React.useEffect(() => {
     const listener = () => setIsLogged(!!localStorage.getItem('token'))
     window.addEventListener('storage', listener)
     return () => window.removeEventListener('storage', listener)
   }, [])
 
+  // 🔥 Rotas que NÃO devem mostrar o menu
+  const hideMenuRoutes = ['/login', '/register']
+
+  const mustHideMenu = hideMenuRoutes.includes(location.pathname)
+
   return (
     <div className="min-h-screen bg-slate-50">
 
-      {/* 🔥 Navbar só aparece se o usuário estiver logado */}
-      {isLogged && <Nav />}
+      {/* 🔥 Navbar só aparece se o usuário estiver logado E não estiver em rotas públicas */}
+      {isLogged && !mustHideMenu && <Nav />}
 
-      <main className={isLogged ? 'pl-72 p-8 transition-all' : 'p-8'}>
+      <main className={isLogged && !mustHideMenu ? 'pl-72 p-8 transition-all' : 'p-8'}>
         <Routes>
 
           {/* Redirecionamento inteligente */}
@@ -74,7 +83,6 @@ export default function App() {
           <Route path="/user" element={<RequireAuth><Account /></RequireAuth>} />
 
           {/* =================== ROTAS ADMIN =================== */}
-
           <Route
             path="/admin"
             element={
@@ -129,7 +137,6 @@ export default function App() {
               </RequireAuth>
             }
           />
-
           {/* ================================================== */}
 
         </Routes>
