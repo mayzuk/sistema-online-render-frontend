@@ -18,6 +18,9 @@ import CarismasAdmin from './pages/admin/CarismasAdmin'
 import { AuthContext } from './contexts/AuthContext'
 // -------------------------------------
 
+// 👉 IMPORTANTE: importar a tela Forgot
+import Forgot from './pages/Forgot'
+
 function RequireAuth({ children }) {
   const token = localStorage.getItem('token')
   if (!token) return <Navigate to="/login" replace />
@@ -36,24 +39,21 @@ function RequireAdmin({ children }) {
 export default function App() {
   const location = useLocation()
 
-  // 🔥 Estado que controla se o usuário está logado
   const [isLogged, setIsLogged] = React.useState(!!localStorage.getItem('token'))
 
-  // 🔥 Atualiza automaticamente quando o token muda (login, logout)
   React.useEffect(() => {
     const listener = () => setIsLogged(!!localStorage.getItem('token'))
     window.addEventListener('storage', listener)
     return () => window.removeEventListener('storage', listener)
   }, [])
 
-  // Rotas em que o menu NÃO deve aparecer
-  const hideMenuRoutes = ['/login', '/register']
+  const hideMenuRoutes = ['/login', '/register', '/forgot']
   const mustHideMenu = hideMenuRoutes.includes(location.pathname)
 
   return (
     <div className="min-h-screen bg-slate-50">
-      {/* Navbar só aparece se o usuário estiver logado E não estiver em rotas públicas */}
       {isLogged && !mustHideMenu && <Nav />}
+
       <main className={isLogged && !mustHideMenu ? 'pl-72 p-8 transition-all' : 'p-8'}>
         <Routes>
           {/* Redirecionamento inteligente */}
@@ -67,6 +67,9 @@ export default function App() {
           {/* Rotas públicas */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+
+          {/* 💥 ROTA QUE FALTAVA */}
+          <Route path="/forgot" element={<Forgot />} />
 
           {/* Rotas protegidas */}
           <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />
