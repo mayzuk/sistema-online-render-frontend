@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react'
 import { AuthContext } from '../contexts/AuthContext'
 import { motion } from 'framer-motion'
-import { Lock, Mail } from 'lucide-react/dist/esm/lucide-react.js'
+import { Lock, Mail } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 export default function Login(){
@@ -76,7 +76,7 @@ export default function Login(){
               className="w-full p-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all" 
             />
 
-            {/* 🔥 Aqui está o link alinhado corretamente */}
+            {/* Link de recuperar senha corretamente alinhado */}
             <div className="flex justify-end mt-1">
               <Link 
                 to="/forgot" 
