@@ -15,7 +15,7 @@ export default function Forgot() {
     setError("");
 
     try {
-      await axios.post("https://seu-backend.com/auth/forgot", { email });
+      await axios.post("https://sistema-online-render-backend.onrender.com/auth/forgot", { email });
 
       setMessage("Um link de redefinição foi enviado para seu e-mail!");
     } catch (err) {
