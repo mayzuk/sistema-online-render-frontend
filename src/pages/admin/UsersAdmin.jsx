@@ -3,7 +3,6 @@ import AdminLayout from './AdminLayout'
 import { api } from '../../services/api'
 
 export default function UsersAdmin() {
-
   const [users, setUsers] = useState([])
   const [cities, setCities] = useState([])
   const [loading, setLoading] = useState(true)
@@ -27,7 +26,6 @@ export default function UsersAdmin() {
     load()
   }, [])
 
-  // Atualiza campo sem mutar estado
   function updateUserField(id, field, value) {
     setUsers(prev =>
       prev.map(u => u.id === id ? { ...u, [field]: value } : u)
@@ -54,25 +52,19 @@ export default function UsersAdmin() {
   return (
     <AdminLayout title="Usuários">
       <div className="space-y-3">
-
         {users.map(user => (
-          <div key={user.id}
+          <div
+            key={user.id}
             className="bg-white p-4 rounded-lg shadow flex flex-col md:flex-row md:items-center md:justify-between gap-3"
           >
-
-            {/* Nome e e-mail */}
             <div>
               <div className="font-semibold">{user.name}</div>
               <div className="text-sm text-slate-500">{user.email}</div>
             </div>
-
-            {/* Campos */}
             <div className="flex items-center gap-2">
-
-              {/* Cidade */}
               <select
                 value={user.city_id || ''}
-                onChange={e => updateUserField(user.id, "city_id", e.target.value)}
+                onChange={e => updateUserField(user.id, 'city_id', e.target.value)}
                 className="p-2 border rounded"
               >
                 <option value="">— cidade —</option>
@@ -80,18 +72,13 @@ export default function UsersAdmin() {
                   <option key={ct.id} value={ct.id}>{ct.name}</option>
                 ))}
               </select>
-
-              {/* Admin checkbox */}
               <label className="flex items-center gap-2">
                 <input
                   type="checkbox"
                   checked={!!user.is_admin}
-                  onChange={e => updateUserField(user.id, "is_admin", e.target.checked)}
-                />
-                Admin
+                  onChange={e => updateUserField(user.id, 'is_admin', e.target.checked)}
+                /> Admin
               </label>
-
-              {/* Botão salvar */}
               <button
                 onClick={() => save(user)}
                 className="px-3 py-1 rounded bg-brand-blue text-white"
@@ -101,7 +88,6 @@ export default function UsersAdmin() {
             </div>
           </div>
         ))}
-
       </div>
     </AdminLayout>
   )
