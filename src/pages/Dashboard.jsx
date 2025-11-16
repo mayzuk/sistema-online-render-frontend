@@ -74,6 +74,23 @@ export default function Dashboard() {
         </HeaderCard>
 
         {/* ATIVIDADES */}
-        <HeaderCard title="Atividades">
-          <div className="grid grid-cols-3 gap-4">
-            <div className="bg-white p-4 rounded-lg shadow">
+<HeaderCard title="Atividades">
+  <div className="grid grid-cols-3 gap-4">
+
+    <div className="bg-white p-4 rounded-lg shadow">
+      <div className="text-2xl font-bold">{atividades.total_eventos}</div>
+      <div className="text-sm text-slate-500">Eventos</div>
+    </div>
+
+    <div className="bg-white p-4 rounded-lg shadow">
+      <div className="text-2xl font-bold">{atividades.total_encontros}</div>
+      <div className="text-sm text-slate-500">Encontros</div>
+    </div>
+
+    <div className="bg-white p-4 rounded-lg shadow">
+      <div className="text-2xl font-bold">{atividades.total_outros}</div>
+      <div className="text-sm text-slate-500">Outros</div>
+    </div>
+
+  </div>
+</HeaderCard>
